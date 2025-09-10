@@ -1,0 +1,1 @@
+export const PARABANKURL = 'https://parabank.parasoft.com/';

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext",
+    "types": ["playwright"],
+    "baseUrl": "./",
+    "paths": {
+      "@resources/*": ["resources/*"],
+      "@pages/*": ["src/pages/*"],
+      "@base/*": ["src/base/*"],
+      "@utils/*": ["utils/*"]
+
+    }
+  },
+  "include": [
+    "src/**/*", "resources", "utils",
+    "playwright.config.ts"
+  ]
+}
