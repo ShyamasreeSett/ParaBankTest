@@ -8,9 +8,9 @@ export const generateUser = () => {
 const baseName = "Sett";
 const timestamp = Date.now(); // milliseconds
 const random = Math.floor(Math.random() * 10000); // 0–9999
-const username = 'sett5';
   return {
-    /*firstName, 
+    /*
+    firstName,
     lastName: faker.person.lastName(),
     address: faker.location.streetAddress(),
     city: faker.location.city(),
@@ -21,16 +21,17 @@ const username = 'sett5';
    username: `sett${Date.now()}_${firstName}`,
     password: faker.internet.password({ length: 12, memorable: true }) // random password
     */
-   firstName,
-   lastName: 'sett5',
-    address: 'sett5',
-    city: 'sett5',
-    state: 'sett5',
+   firstName: 'sett992',
+   lastName: 'sett99',
+    address: 'sett99',
+    city: 'sett99',
+    state: 'sett99',
     zip: '1234',
     phone: '12345',
     ssn: '123456',
    // username: `st${Date.now()}_${firstName}`,
-   username,
+   username: 'sett992',
     password: 's123' 
+    
   };
 };

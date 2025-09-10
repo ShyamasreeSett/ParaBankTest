@@ -16,3 +16,7 @@ export const LOGINPAGE = {
     ERROR_TITLE: 'Error!'
 };
 
+export const TRANSFERPAGE = {
+    AMOUNT: '25.00'
+};
+

@@ -6,6 +6,7 @@ export class myAccountsOverviewPage {
     readonly table: Locator;
     readonly total: Locator;
     readonly balanceCells: Locator;
+    readonly firstAccount: Locator;
 
 
     //constructor 
@@ -14,9 +15,8 @@ export class myAccountsOverviewPage {
         this.title = page.locator('#showOverview > .title');
         this.table = page.locator('#accountTable');
         this.total = page.locator('text="Total"');
+                this.firstAccount = page.locator('//table[@id="accountTable"]//tr[td/a][1]');
         this.balanceCells = page.locator('//table[@id="accountTable"]//tr[td/a]/td[2]');
-
-
     }
 
     async getTitle() {
@@ -28,12 +28,20 @@ export class myAccountsOverviewPage {
         }
     }
 
+    async getAccountOverview1stAccount(): Promise<string[]> {
+        try {
+            await this.total.waitFor({ state: 'visible' });
+            return (await this.firstAccount.locator('td').allTextContents());// return all elements in the 1st row as array
+        } catch (error) {
+            console.error('1st Account row was not available', error);
+        }
+    }
+
     async getAccountOverviewRow(account: string): Promise<string[]> {
         try {
             await this.total.waitFor({ state: 'visible' });
             const rowN = this.page.locator(`//table[@id="accountTable"]//tr[td/a[text()="${account}"]]`);
             const allCells = rowN.locator('td');
-            console.log(await allCells.allTextContents());
             return (await allCells.allTextContents());// return all elements in the row as array
         } catch (error) {
             console.error('Account rows were not available', error);
