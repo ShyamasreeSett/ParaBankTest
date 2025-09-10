@@ -6,8 +6,7 @@ import { PARABANKURL } from '@resources/constants';
 import { generateUser } from '@utils/generateUser';
 import { myNavigationPanel } from '@pages/navigationPanel.page';
 import { myOpenNewAccountPage } from '@pages/openNewAccount.page';
-
-
+import { myTranferFundsPage } from '@pages/transferFunds.page';
 import { myAccountsOverviewPage } from '@pages/accountsOverview.page';
 import { myHomePage } from '@pages/homePage';
 
@@ -19,7 +18,7 @@ type Pages = {
   navigationPanel: myNavigationPanel;
     homePage: myHomePage;
   openNewAccount: myOpenNewAccountPage;
-
+  transferFundsPage: myTranferFundsPage;
   registerFormPage: ReturnType<typeof myRegisterFormPage>;
 };
 
@@ -41,6 +40,9 @@ const testPages = baseTest.extend<Pages>({
   },
     openNewAccount: async ({ page }, use) => {
     await use(new myOpenNewAccountPage(page));
+  },
+    transferFundsPage: async ({ page }, use) => {
+    await use(new myTranferFundsPage(page));
   },
   registerFormPage: async ({ page }, use) => {
     await use(myRegisterFormPage(page));

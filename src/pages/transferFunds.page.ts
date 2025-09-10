@@ -1,6 +1,6 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 
-export class myAccountsOverviewPage {
+export class myTranferFundsPage {
     readonly page: Page;
     readonly title: Locator;
     readonly table: Locator;
@@ -13,10 +13,9 @@ export class myAccountsOverviewPage {
         this.page = page;
         this.title = page.locator('#showOverview > .title');
         this.table = page.locator('#accountTable');
+        this.total = page.locator('#accountTable');
         this.total = page.locator('text="Total"');
         this.balanceCells = page.locator('//table[@id="accountTable"]//tr[td/a]/td[2]');
-
-
     }
 
     async getTitle() {
@@ -33,31 +32,25 @@ export class myAccountsOverviewPage {
             await this.total.waitFor({ state: 'visible' });
             const rowN = this.page.locator(`//table[@id="accountTable"]//tr[td/a[text()="${account}"]]`);
             const allCells = rowN.locator('td');
-            console.log(await allCells.allTextContents());
             return (await allCells.allTextContents());// return all elements in the row as array
         } catch (error) {
             console.error('Account rows were not available', error);
         }
     }
 
-    async getTotalBalance() {
+    async calculateTotalBalance() {
         try {
             const balanceTexts = await this.balanceCells.allTextContents();
+            //replace the dollar symbols and convert to number
+            const balances = balanceTexts.map(text => Number(text.replace('$', '').trim()));
 
-            // replace dollar and convert to number
-            const balances = balanceTexts.map(text => Number(text.replace('$', '').trim())
-            );
-
-            // Sum the numbers using lamda function reduce
+            //add the values
             const total = balances.reduce((acc, val) => acc + val, 0);
+
             return total;
         } catch (error) {
-            console.error('Account balances were not calculated', error);
+            console.error('Account rows were not available', error);
         }
     }
 
-    // Wait until network is idle (page is stable)
-    async waitUntilStable() {
-        await this.page.waitForLoadState('networkidle'); // waits until no network requests for ~500ms
-    }
 }

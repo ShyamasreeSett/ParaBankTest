@@ -7,6 +7,8 @@ export class myNavigationPanel {
     readonly home: Locator;
     readonly userName: Locator;
         readonly accountOverview: Locator;
+                readonly transferFunds: Locator;
+
 
 
 
@@ -18,6 +20,8 @@ export class myNavigationPanel {
         this.newAccount = page.getByRole('link', { name: 'Open New Account' }); 
                 this.accountOverview = page.getByRole('link', { name: 'Accounts Overview' }); 
         this.logout = page.getByRole('link', { name: 'Log Out' }); //element by role with text
+                        this.transferFunds = page.getByRole('link', { name: 'Transfer Funds' }); 
+
 
 
     }
@@ -51,6 +55,14 @@ export class myNavigationPanel {
             await this.accountOverview.click();
         } catch (error) {
             console.error('Unable to click accounts overview link in the left pane ', error);
+        }
+    }
+
+     async clickTransferFunds() {
+        try {
+            await this.transferFunds.click();
+        } catch (error) {
+            console.error('Unable to click transfer funds link in the left pane ', error);
         }
     }
 

@@ -53,6 +53,7 @@ export class myOpenNewAccountPage {
 
     async getNewAccountNo() {
         try {
+            await this.accountNo.waitFor({ state: 'visible' });
             return (await this.accountNo.textContent());
         } catch (error) {
             console.error('We did not succeed to get a new account number', error);
