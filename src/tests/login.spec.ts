@@ -11,9 +11,9 @@ test("test successful login", async ({ loginPage, accountsOverviewPage, navigati
      const newUser = registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
 
      //Login with the new unique user
-     loginPage.enterUsername((await newUser).username);
-     loginPage.enterPassword((await newUser).password);
-     loginPage.clickLogin();
+     await loginPage.enterUsername((await newUser).username);
+     await loginPage.enterPassword((await newUser).password);
+     await loginPage.clickLogin();
 
      // Verify login with correct user
      expect(await navigationPanel.getUserName())
@@ -28,9 +28,9 @@ test("test unsuccessful login with null password", async ({ loginPage, navigatio
      //Register new user and logout
      const newUser = registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
 
-     loginPage.enterUsername((await newUser).username);
+     await loginPage.enterUsername((await newUser).username);
      //Do not enter password
-     loginPage.clickLogin();
+     await loginPage.clickLogin();
      // Verify error message titile
      expect(await loginPage.getErrorTitle())
           .toBe(LOGINPAGE.ERROR_TITLE);
@@ -42,7 +42,7 @@ test("test unsuccessful login with null username and password", async ({ loginPa
 
 
      //Do not enter username and password
-     loginPage.clickLogin();
+     await loginPage.clickLogin();
      // Verify error message titile
      expect(await loginPage.getErrorTitle())
           .toBe(LOGINPAGE.ERROR_TITLE);

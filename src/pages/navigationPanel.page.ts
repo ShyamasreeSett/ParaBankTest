@@ -6,15 +6,19 @@ export class myNavigationPanel {
     readonly newAccount: Locator;
     readonly home: Locator;
     readonly userName: Locator;
+        readonly accountOverview: Locator;
+
 
 
     //constructor 
     constructor(page: Page) {
         this.page = page;
         this.userName = page.locator('#leftPanel p.smallText'); //used xpath
-        this.logout = page.getByRole('link', { name: 'Log Out' }); //element by role with text
+                this.home = page.getByRole('link', { name: 'home' }); 
         this.newAccount = page.getByRole('link', { name: 'Open New Account' }); 
-        this.home = page.getByRole('link', { name: 'home' }); 
+                this.accountOverview = page.getByRole('link', { name: 'Accounts Overview' }); 
+        this.logout = page.getByRole('link', { name: 'Log Out' }); //element by role with text
+
 
     }
 
@@ -39,6 +43,14 @@ export class myNavigationPanel {
             await this.newAccount.click();
         } catch (error) {
             console.error('Unable to click open new account link in the left pane ', error);
+        }
+    }
+
+      async clickAccountOverview() {
+        try {
+            await this.accountOverview.click();
+        } catch (error) {
+            console.error('Unable to click accounts overview link in the left pane ', error);
         }
     }
 

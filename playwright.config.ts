@@ -2,9 +2,9 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './src',
-  retries: 2,
+  retries: 1,
   use: {
-    headless: true,
+    headless: false,
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
     screenshot: 'on',

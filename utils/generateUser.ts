@@ -8,7 +8,7 @@ export const generateUser = () => {
 const baseName = "Sett";
 const timestamp = Date.now(); // milliseconds
 const random = Math.floor(Math.random() * 10000); // 0–9999
-const username = `SettShyam_${randomUUID().slice(0, 5)}`;
+const username = 'sett5';
   return {
     /*firstName, 
     lastName: faker.person.lastName(),
@@ -18,15 +18,14 @@ const username = `SettShyam_${randomUUID().slice(0, 5)}`;
     zip: faker.location.zipCode(),
     phone: faker.string.numeric(10),
     ssn: faker.string.numeric(9),
-   // username: `st${Date.now()}_${firstName}`,
-   username: `shyamasree${Date.now()}`,
+   username: `sett${Date.now()}_${firstName}`,
     password: faker.internet.password({ length: 12, memorable: true }) // random password
     */
    firstName,
-   lastName: 'faker.person.lastName()',
-    address: 'faker.location.streetAddress()',
-    city: 'faker.location.city()',
-    state: 'faker.location.state()',
+   lastName: 'sett5',
+    address: 'sett5',
+    city: 'sett5',
+    state: 'sett5',
     zip: '1234',
     phone: '12345',
     ssn: '123456',

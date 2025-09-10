@@ -6,10 +6,13 @@ export const WELCOMEPAGE = {
 };
 
 export const ACCOUNT_OVERVIEWPAGE = {
-    TITLE: 'Accounts Overview'
+    TITLE: 'Accounts Overview',
+    NEWACCOUNT_BALANCE: '$100.00',
+    TOTALACCOUNT_BALANCE: '$515.50'
 };
 
 export const LOGINPAGE = {
     ERROR_DESC: 'Please enter a username and password.',
     ERROR_TITLE: 'Error!'
 };
+
