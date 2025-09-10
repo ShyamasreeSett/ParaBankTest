@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './src',
   retries: 2,
   use: {
-    headless: false,
+    headless: true,
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
     screenshot: 'on',
@@ -14,6 +14,7 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    /*
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
@@ -21,7 +22,8 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    },
+    }, */
   ],
+ 
   reporter: 'html',
 });

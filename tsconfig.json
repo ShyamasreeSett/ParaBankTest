@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "esnext",
-    "types": ["playwright"],
+    "types": ["playwright", "node"],
     "baseUrl": "./",
     "paths": {
       "@resources/*": ["resources/*"],
