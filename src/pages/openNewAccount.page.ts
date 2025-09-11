@@ -65,6 +65,12 @@ export class myOpenNewAccountPage {
       async  waitUntilStable() {
         await this.page.waitForLoadState('networkidle'); // waits until no network requests for ~500ms
       }
-    
+
+     async openNewAccount(accountType:string) {
+       //OPen new SAVINGS account
+            await this.selectAccountType(accountType);
+            await this.waitUntilStable();
+            await this.clickOpenAccountButton();
+    }
 
 }

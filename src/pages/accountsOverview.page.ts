@@ -15,7 +15,7 @@ export class myAccountsOverviewPage {
         this.title = page.locator('#showOverview > .title');
         this.table = page.locator('#accountTable');
         this.total = page.locator('text="Total"');
-                this.firstAccount = page.locator('//table[@id="accountTable"]//tr[td/a][1]');
+        this.firstAccount = page.locator('//table[@id="accountTable"]//tr[td/a][1]');
         this.balanceCells = page.locator('//table[@id="accountTable"]//tr[td/a]/td[2]');
     }
 

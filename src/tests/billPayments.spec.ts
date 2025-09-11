@@ -2,15 +2,16 @@ import { gotoURL, test, expect, registerUserAndLogout } from '@base/baseTest';
 import { myNavigationPanel } from '@pages/navigationPanel.page';
 import { myOpenNewAccountPage } from '@pages/openNewAccount.page';
 import { AccountType } from '@resources/accountType.enum';
-import { TRANSFERPAGE } from '@resources/constants';
+import { ACCOUNT_OVERVIEWPAGE } from '@resources/constants';
+import { generatePayeeData } from '@utils/generateBeneficiary';
 
 
 test.beforeEach(async ({ page, context, loginPage, navigationPanel, registerFormPage }) => {
-     // Clear cookies
+      // Clear cookies
      await context.clearCookies();
      await gotoURL(page);
 
-     //Login with the new unique user
+     //Register with the new unique user
      const newUser = registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
 
      //Login with the new unique user
@@ -18,68 +19,64 @@ test.beforeEach(async ({ page, context, loginPage, navigationPanel, registerForm
      await loginPage.enterPassword((await newUser).password);
      await loginPage.clickLogin();
 
-
 })
 
-test("test transfer funds success", async ({ navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage }) => {
-
-     //1st get the original account no to get transfer to fund
-     await navigationPanel.clickAccountOverview();
-     const originalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
+test("test bill payment success", async ({ navigationPanel, openNewAccount, billPaymentFormPage, billPayPage }) => {
 
      //OPen new account
      await openNewAccountForUser(navigationPanel, openNewAccount);
 
      //get the new account number
      const accountNoNew = await openNewAccount.getNewAccountNo();
-     await navigationPanel.clickAccountOverview();
 
-     //get the valuesof balances from the new account
-     const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+     //Pay the bill
+     await navigationPanel.clickBillPay();
+     const billForm = generatePayeeData(accountNoNew);
 
-})
-
-test("test end to end Fund Transfer Scenario", async ({ navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage }) => {
-
-     //1st get the original account no to get transfer to fund
-     await navigationPanel.clickAccountOverview();
-     const originalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
-     const originalAccountBalance = await convertAccountBalanceToNumber(originalAccount[1]);
-
-     //OPen new account
-     await openNewAccountForUser(navigationPanel, openNewAccount);
-
-     //get the new account number
-     const accountNoNew = await openNewAccount.getNewAccountNo();
-     await navigationPanel.clickAccountOverview();
-
-     //get the valuesof balances from the new account
-     const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
-     const newAccountBalance = await convertAccountBalanceToNumber(accountRow[1]);
-
-     //Perform funds transfer
-     await navigationPanel.clickTransferFunds();
-     await transferFundsPage.enterTransferAmount(TRANSFERPAGE.AMOUNT);
-     await transferFundsPage.selectFromAccount(accountNoNew);
-     await transferFundsPage.selectToAccount(originalAccount[0]);
-     await transferFundsPage.clickTransferButton();
+     // Fill and submit the bill payment form
+     await billPaymentFormPage.fillForm(billForm);
 
      //Verify that funds transfer was successful
-     expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
+     expect(await billPayPage.isSuccessTitleVisible()).toBe(true);
+     expect(await billPayPage.getSuccessDesc()).toContain('Bill Payment to ' + billForm.payeeName + ' in the amount of $' + billForm.amount + ' from account ' + accountNoNew + ' was successful.');
+
+})
+
+test("test end to end Fund Transfer Scenario", async ({ navigationPanel, openNewAccount, accountsOverviewPage, billPaymentFormPage, billPayPage }) => {
+
+     //1st get the original account no to get transfer to fund
+     await navigationPanel.clickAccountOverview();
+
+     //OPen new account
+     await openNewAccountForUser(navigationPanel, openNewAccount);
+
+     //get the new account number
+     const accountNoNew = await openNewAccount.getNewAccountNo();
+
+     //get the new account balance 
+     await navigationPanel.clickAccountOverview();
+     const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+     const newAccountBalance = accountRow[1];
+
+     //Pay the bill
+     await navigationPanel.clickBillPay();
+     const billForm = generatePayeeData(accountNoNew);
+
+     // Fill and submit the bill payment form
+     await billPaymentFormPage.fillForm(billForm);
+
+     //Verify that funds transfer was successful
+     expect(await billPayPage.isSuccessTitleVisible()).toBe(true);
 
      await navigationPanel.clickAccountOverview();
 
      //get all the updated account balances
      const UpdatedNewAccountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
      const updatedNewAccountBalance = await convertAccountBalanceToNumber(UpdatedNewAccountRow[1]);
-     const updatedOriginalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
-     const updatedOriginalAccountBalance = await convertAccountBalanceToNumber(updatedOriginalAccount[1]);
-     const transferAmountNo = await convertAccountBalanceToNumber(TRANSFERPAGE.AMOUNT);
+      const billAmount = await convertAccountBalanceToNumber(billForm.amount);
+      const originalbalance = await convertAccountBalanceToNumber(newAccountBalance);
 
-     //Validate the balances have been updated in Account Overview page
-     expect(updatedNewAccountBalance).toBe(newAccountBalance - transferAmountNo);
-     expect(updatedOriginalAccountBalance).toBe(originalAccountBalance + transferAmountNo - newAccountBalance);
-
+     expect(updatedNewAccountBalance).toBe(originalbalance - billAmount);
 })
 
 async function openNewAccountForUser(navigationPanel: myNavigationPanel, openNewAccount: myOpenNewAccountPage) {

@@ -7,7 +7,6 @@ export const WELCOMEPAGE = {
 
 export const ACCOUNT_OVERVIEWPAGE = {
     TITLE: 'Accounts Overview',
-    NEWACCOUNT_BALANCE: '$100.00',
     TOTALACCOUNT_BALANCE: '$515.50'
 };
 

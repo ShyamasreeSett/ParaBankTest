@@ -5,14 +5,14 @@ const SELECTORS = {
   payeeName: '[name="payee\\.name"]',
   address: '[name="payee\\.address\\.street"]',
   city: '[name="payee\\.address\\.city"]',
-  state: '[name="payee\\.address\\.state"',
+  state: '[name="payee\\.address\\.state"]',
   zip: '[name="payee\\.address\\.zipCode"]',
   phone: '[name="payee\\.phoneNumber"]',
   accountNumber: '[name="payee\\.accountNumber"]',
   verifyAccountNumber: '[name="verifyAccount"]',
   amount: '[name="amount"]',
   fromAccount: '[name="fromAccountId"]',
-  submitButton: 'input[type="submit"][value="Send Payment"]'
+  submitButton: 'input[type="button"][value="Send Payment"]'
 };
 
 export const myBillPaymentFormPage = (page: Page) => ({
@@ -44,7 +44,7 @@ export const myBillPaymentFormPage = (page: Page) => ({
     await page.fill(SELECTORS.amount, amount);
   },
   fillFromAccount: async (account: string) => {
-    await page.fill(SELECTORS.fromAccount, account);
+    await page.selectOption(SELECTORS.fromAccount, { value: account });
   },
   submit: async () => {
     await page.click(SELECTORS.submitButton);

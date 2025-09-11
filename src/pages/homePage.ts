@@ -12,16 +12,16 @@ export class myHomePage {
         this.page = page;
         this.title = page.locator('#showOverview > .title');
         this.atmService = page.locator('text="ATM Services"'); 
- 
     }
 
     async isATMServiceAvailable() {
         try {
-                        await this.atmService.waitFor({ state: 'visible' }); //wait till the login form is loaded
+        await this.atmService.waitFor({ state: 'visible' }); //wait till the login form is loaded
 
-        await this.atmService.isVisible();
+        return await this.atmService.isVisible();
     } catch (error) {
         console.error('ATM service link is not displayed in home page:', error);
+        return false;
     }
 }
     

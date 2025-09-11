@@ -9,7 +9,8 @@ import { myOpenNewAccountPage } from '@pages/openNewAccount.page';
 import { myTranferFundsPage } from '@pages/transferFunds.page';
 import { myAccountsOverviewPage } from '@pages/accountsOverview.page';
 import { myHomePage } from '@pages/homePage';
-import { myBillPaymentFormPage } from '@pages/billPayment.page';
+import { myBillPayPage } from '@pages/billPay.page';
+import { myBillPaymentFormPage } from '@pages/billPaymentForm.page';
 
 
 // Create instances of the page classes
@@ -18,11 +19,12 @@ type Pages = {
   welcomePage: myWelcomePage;
   accountsOverviewPage: myAccountsOverviewPage;
   navigationPanel: myNavigationPanel;
-    homePage: myHomePage;
+  homePage: myHomePage;
   openNewAccount: myOpenNewAccountPage;
   transferFundsPage: myTranferFundsPage;
+  billPayPage: myBillPayPage;
   registerFormPage: ReturnType<typeof myRegisterFormPage>;
-    billPaymentFormPage: ReturnType<typeof myBillPaymentFormPage>;
+  billPaymentFormPage: ReturnType<typeof myBillPaymentFormPage>;
 
 };
 
@@ -42,11 +44,14 @@ const testPages = baseTest.extend<Pages>({
   homePage: async ({ page }, use) => {
     await use(new myHomePage(page));
   },
-    openNewAccount: async ({ page }, use) => {
+  openNewAccount: async ({ page }, use) => {
     await use(new myOpenNewAccountPage(page));
   },
-    transferFundsPage: async ({ page }, use) => {
+  transferFundsPage: async ({ page }, use) => {
     await use(new myTranferFundsPage(page));
+  },
+  billPayPage: async ({ page }, use) => {
+    await use(new myBillPayPage(page));
   },
   registerFormPage: async ({ page }, use) => {
     await use(myRegisterFormPage(page));
@@ -68,15 +73,15 @@ async function registerUserAndLogout(loginPage: myLoginPage, registerFormPage: R
   await loginPage.clickRegisterLink();
   const newUser = generateUser();
   await registerFormPage.fillForm(newUser);
-         await navigationPanel.userLogout();
+  await navigationPanel.userLogout();
   return newUser;
 }
 async function registerUserAndLogin(loginPage: myLoginPage, registerFormPage: ReturnType<typeof myRegisterFormPage>, navigationPanel: myNavigationPanel) {
-const newUser =  registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
-     loginPage.enterUsername((await newUser).username);
+  const newUser = registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
+  loginPage.enterUsername((await newUser).username);
 
-     loginPage.enterPassword((await newUser).password);
-     loginPage.clickLogin();
+  loginPage.enterPassword((await newUser).password);
+  loginPage.clickLogin();
 
   return newUser;
 }

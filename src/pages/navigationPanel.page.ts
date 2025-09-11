@@ -8,22 +8,18 @@ export class myNavigationPanel {
     readonly userName: Locator;
     readonly accountOverview: Locator;
     readonly transferFunds: Locator;
-
-
-
+    readonly billPayment: Locator;
 
     //constructor 
     constructor(page: Page) {
         this.page = page;
         this.userName = page.locator('#leftPanel p.smallText'); //used xpath
-        this.home = page.getByRole('link', { name: 'home' });
+        this.home = page.locator('.home');
         this.newAccount = page.getByRole('link', { name: 'Open New Account' });
         this.accountOverview = page.getByRole('link', { name: 'Accounts Overview' });
         this.logout = page.getByRole('link', { name: 'Log Out' }); //element by role with text
         this.transferFunds = page.getByRole('link', { name: 'Transfer Funds' });
-
-
-
+        this.billPayment = page.getByRole('link', { name: 'Bill Pay' });
     }
 
     async getUserName() {
@@ -71,6 +67,14 @@ export class myNavigationPanel {
             await this.home.click();
         } catch (error) {
             console.error('Unable to click home link in the top pane ', error);
+        }
+    }
+
+    async clickBillPay() {
+        try {
+            await this.billPayment.click();
+        } catch (error) {
+            console.error('Unable to click Bill Pay link in the left pane ', error);
         }
     }
 }

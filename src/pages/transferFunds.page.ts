@@ -7,8 +7,6 @@ export class myTranferFundsPage {
     readonly title: Locator;
     readonly successDesc: Locator;
 
-
-
     //constructor 
     constructor(page: Page) {
         this.page = page;
@@ -16,7 +14,6 @@ export class myTranferFundsPage {
         this.transfer = page.getByRole('button', { name: 'Transfer' });
         this.title = page.locator('.title', { hasText: 'Transfer Complete!' });
         this.successDesc = this.title.locator('xpath=following-sibling::p[1]');
-
     }
 
     async enterTransferAmount(transferAmount: string) {
@@ -26,6 +23,7 @@ export class myTranferFundsPage {
             console.error('Unable to enter amount of fund should be transfered', error);
         }
     }
+
     async selectFromAccount(accountNo: string) {
         try {
             await this.page.selectOption('#fromAccountId', accountNo);
@@ -52,7 +50,7 @@ export class myTranferFundsPage {
 
     async isSuccessTitleVisible() {
         try {
-                        await this.title.waitFor({ state: 'visible' });
+            await this.title.waitFor({ state: 'visible' });
             return (await this.title.isVisible());
         } catch (error) {
             console.error('success title is not displayed after transfer ', error);
@@ -60,7 +58,7 @@ export class myTranferFundsPage {
         }
     }
 
-    async getSuccessDesc(){
+    async getSuccessDesc() {
         try {
             console.log(await this.successDesc.allTextContents());
             return (await this.successDesc.textContent());
@@ -70,4 +68,10 @@ export class myTranferFundsPage {
         }
     }
 
+    async transferFund(amount: string, accountnoNew: string, accountNoOld: string) {
+        await this.enterTransferAmount(amount);
+        await this.selectFromAccount(accountnoNew);
+        await this.selectToAccount(accountNoOld);
+        await this.clickTransferButton();
+    }
 }
