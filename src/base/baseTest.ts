@@ -9,6 +9,8 @@ import { myOpenNewAccountPage } from '@pages/openNewAccount.page';
 import { myTranferFundsPage } from '@pages/transferFunds.page';
 import { myAccountsOverviewPage } from '@pages/accountsOverview.page';
 import { myHomePage } from '@pages/homePage';
+import { myBillPaymentFormPage } from '@pages/billPayment.page';
+
 
 // Create instances of the page classes
 type Pages = {
@@ -20,6 +22,8 @@ type Pages = {
   openNewAccount: myOpenNewAccountPage;
   transferFundsPage: myTranferFundsPage;
   registerFormPage: ReturnType<typeof myRegisterFormPage>;
+    billPaymentFormPage: ReturnType<typeof myBillPaymentFormPage>;
+
 };
 
 const testPages = baseTest.extend<Pages>({
@@ -46,6 +50,9 @@ const testPages = baseTest.extend<Pages>({
   },
   registerFormPage: async ({ page }, use) => {
     await use(myRegisterFormPage(page));
+  },
+  billPaymentFormPage: async ({ page }, use) => {
+    await use(myBillPaymentFormPage(page));
   }
 });
 

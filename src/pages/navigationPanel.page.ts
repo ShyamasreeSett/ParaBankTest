@@ -6,8 +6,8 @@ export class myNavigationPanel {
     readonly newAccount: Locator;
     readonly home: Locator;
     readonly userName: Locator;
-        readonly accountOverview: Locator;
-                readonly transferFunds: Locator;
+    readonly accountOverview: Locator;
+    readonly transferFunds: Locator;
 
 
 
@@ -16,11 +16,11 @@ export class myNavigationPanel {
     constructor(page: Page) {
         this.page = page;
         this.userName = page.locator('#leftPanel p.smallText'); //used xpath
-                this.home = page.getByRole('link', { name: 'home' }); 
-        this.newAccount = page.getByRole('link', { name: 'Open New Account' }); 
-                this.accountOverview = page.getByRole('link', { name: 'Accounts Overview' }); 
+        this.home = page.getByRole('link', { name: 'home' });
+        this.newAccount = page.getByRole('link', { name: 'Open New Account' });
+        this.accountOverview = page.getByRole('link', { name: 'Accounts Overview' });
         this.logout = page.getByRole('link', { name: 'Log Out' }); //element by role with text
-                        this.transferFunds = page.getByRole('link', { name: 'Transfer Funds' }); 
+        this.transferFunds = page.getByRole('link', { name: 'Transfer Funds' });
 
 
 
@@ -50,7 +50,7 @@ export class myNavigationPanel {
         }
     }
 
-      async clickAccountOverview() {
+    async clickAccountOverview() {
         try {
             await this.accountOverview.click();
         } catch (error) {
@@ -58,7 +58,7 @@ export class myNavigationPanel {
         }
     }
 
-     async clickTransferFunds() {
+    async clickTransferFunds() {
         try {
             await this.transferFunds.click();
         } catch (error) {
@@ -66,7 +66,7 @@ export class myNavigationPanel {
         }
     }
 
-        async clickHomePage() {
+    async clickHomePage() {
         try {
             await this.home.click();
         } catch (error) {
