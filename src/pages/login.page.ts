@@ -9,8 +9,6 @@ export class myLoginPage {
     readonly errorTitle: Locator;
     readonly errorDescription: Locator;
 
-
-
     //constructor 
     constructor(page: Page) {
         this.page = page;
@@ -18,7 +16,7 @@ export class myLoginPage {
         this.password = page.locator('[name="password"]');
         this.register = page.getByRole('link', { name: 'Register' }); //element by role with text
         this.loginButton = page.locator('[type="submit"]');
-        this.errorTitle =  page.locator('.title'); //element by text
+        this.errorTitle = page.locator('.title'); //element by text
         this.errorDescription = page.locator('.error'); //element by text
 
     }
@@ -72,10 +70,10 @@ export class myLoginPage {
         }
     }
 
-     async login(username:string, password: string) {
+    async login(username: string, password: string) {
         await this.enterUsername(username);
-     await this.enterPassword(password);
-     await this.clickLogin();
+        await this.enterPassword(password);
+        await this.clickLogin();
 
     }
 

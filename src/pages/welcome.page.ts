@@ -5,11 +5,10 @@ export class myWelcomePage {
     readonly title: Locator;
     readonly description: Locator;
 
-
     //constructor 
     constructor(page: Page) {
         this.page = page;
-        this.title = page.locator('.title'); 
+        this.title = page.locator('.title');
         this.description = page.locator('.title + p');
     }
 
@@ -28,5 +27,4 @@ export class myWelcomePage {
             console.error('Welcome description is not displayed in the welcome page', error);
         }
     }
-
 }

@@ -2,7 +2,6 @@ import { gotoURL, test, expect, registerUserAndLogout } from '@base/baseTest';
 import { myNavigationPanel } from '@pages/navigationPanel.page';
 import { myOpenNewAccountPage } from '@pages/openNewAccount.page';
 import { AccountType } from '@resources/accountType.enum';
-import { ACCOUNT_OVERVIEWPAGE } from '@resources/constants';
 import { generatePayeeData } from '@utils/generateBeneficiary';
 
 

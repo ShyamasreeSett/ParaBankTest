@@ -9,7 +9,6 @@ test.beforeEach(async ({ page, loginPage }) => {
      await loginPage.enterUsername('shya11');
      await loginPage.enterPassword('shya11!');
      await loginPage.clickLogin();
-
 })
 
 test("test successful account opening", async ({ navigationPanel, openNewAccount }) => {
@@ -23,6 +22,6 @@ test("test successful account opening", async ({ navigationPanel, openNewAccount
 
      //Verify that account opening was successful
      expect(await openNewAccount.isSuccessVisible()).toBe(true);
-       //Verify that account number was created
+     //Verify that account number was created
      expect(await openNewAccount.getNewAccountNo()).not.toBeNull();
 })

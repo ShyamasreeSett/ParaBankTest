@@ -1,6 +1,5 @@
 import { gotoURL, test, expect, registerUserAndLogout } from '@base/baseTest';
 
-
 test.beforeEach(async ({ page, loginPage, navigationPanel, registerFormPage }) => {
     await gotoURL(page);
 

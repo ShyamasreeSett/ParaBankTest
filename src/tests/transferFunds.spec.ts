@@ -17,8 +17,6 @@ test.beforeEach(async ({ page, context, loginPage, navigationPanel, registerForm
      await loginPage.enterUsername((await newUser).username);
      await loginPage.enterPassword((await newUser).password);
      await loginPage.clickLogin();
-
-
 })
 
 test("test transfer funds success", async ({ navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage }) => {

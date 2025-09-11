@@ -14,7 +14,6 @@ export class myOpenNewAccountPage {
         this.submit = page.getByRole('button', { name: 'Open New Account' });
         this.success = page.locator('.title', { hasText: 'Account Opened!' });
         this.accountNo = page.locator('#newAccountId');
-
     }
 
     async isTitleVisible() {
@@ -62,15 +61,14 @@ export class myOpenNewAccountPage {
     }
 
     // Wait until network is idle (page is stable)
-      async  waitUntilStable() {
+    async waitUntilStable() {
         await this.page.waitForLoadState('networkidle'); // waits until no network requests for ~500ms
-      }
-
-     async openNewAccount(accountType:string) {
-       //OPen new SAVINGS account
-            await this.selectAccountType(accountType);
-            await this.waitUntilStable();
-            await this.clickOpenAccountButton();
     }
 
+    async openNewAccount(accountType: string) {
+        //OPen new SAVINGS account
+        await this.selectAccountType(accountType);
+        await this.waitUntilStable();
+        await this.clickOpenAccountButton();
+    }
 }

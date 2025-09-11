@@ -1,4 +1,4 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 
 export class myBillPayPage {
     readonly page: Page;
@@ -24,7 +24,7 @@ export class myBillPayPage {
         }
     }
 
-    async getSuccessDesc(){
+    async getSuccessDesc() {
         try {
             console.log(await this.successDesc.allTextContents());
             return (await this.successDesc.textContent());

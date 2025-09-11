@@ -25,7 +25,7 @@ test("@e2e Test end to end Scenario", async ({ page, navigationPanel, openNewAcc
 
      //________________________________________________________________________________
      //Step 3: Login to the application with the user created in step 2.
-     await loginPage.login(newUser.username,newUser.password );
+     await loginPage.login(newUser.username, newUser.password);
 
      // Grab cookies after login
      const cookies = await page.context().cookies();
@@ -64,8 +64,8 @@ test("@e2e Test end to end Scenario", async ({ page, navigationPanel, openNewAcc
      //________________________________________________________________________________
      //Step 7: Transfer funds from account created in step 5 to another account.
      await navigationPanel.clickTransferFunds();
-     await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT,accountNoNew, originalAccount[0]);
-    
+     await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT, accountNoNew, originalAccount[0]);
+
      //Verify that funds transfer was successful
      expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
 
@@ -106,17 +106,17 @@ test("@e2e Test end to end Scenario", async ({ page, navigationPanel, openNewAcc
      //_____________________________________________________________________________________________________________
      // Validate API response: 
      // Search the transactions using “Find transactions” API call by amount for the bill payment
-     
-     const response = getTransactions(request, accountNoNew, billAmount, sessionCookie.value, process.env.BASE_URL);
+
+     const response = await getTransactions(request, accountNoNew, billAmount, sessionCookie.value, process.env.BASE_URL);
 
      // Assert status code
-     expect((await response).status()).toBe(200);
+     expect(response.status()).toBe(200);
 
      // Assert content type is JSON
-     expect((await response).headers()['content-type']).toContain('application/json');
+     expect(response.headers()['content-type']).toContain('application/json');
 
      // Parse body
-     const body = (await response).json();
+     const body = await response.json();
 
      // Validate that the array contains an object with the expected values
      expect(body).toEqual(
