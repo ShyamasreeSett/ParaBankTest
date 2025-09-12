@@ -30,13 +30,8 @@ IF ERRORLEVEL 1 (
     call exit /b 1
 )
 
-REM Step 3: Clean previous Playwright reports
-IF EXIST playwright-report (
-    call echo Removing old Playwright report...
-    call rmdir /s /q playwright-report
-)
 
-REM Step 4: Run Playwright E2E tests
+REM Step 3: Run Playwright E2E tests
 echo Installing tests
 echo -------------------------------
 
@@ -44,7 +39,7 @@ IF "%SUITE%"=="e2e" call npm run test:e2e
 IF "%SUITE%"=="main" call npm run test:main-suite
 IF NOT "%SUITE%"=="e2e" IF NOT "%SUITE%"=="main" call npm run test
 
-REM Step 5: Post-Test Info
+REM Step 4: Post-Test Info
 echo Playwright tests completed successfully.
 echo Reports are located in playwright-report\
 
