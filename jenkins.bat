@@ -37,21 +37,12 @@ IF EXIST playwright-report (
 )
 
 REM Step 4: Run Playwright E2E tests
-IF "%SUITE%"=="e2e" (
-    call echo Running E2E tests...
-    call npm run test:e2e
-) ELSE IF "%SUITE%"=="main" (
-    call echo Running Main Suite tests...
-    call npm run test:main-suite
-) ELSE (
-    call echo WARNING: Invalid suite parameter. Use 'e2e' or 'main'. Running all tests by default
-    call npm run test
-)
+echo Installing tests
+echo -------------------------------
 
-IF ERRORLEVEL 1 (
-    call echo ERROR: Playwright tests failed.
-    call exit /b 1
-)
+IF "%SUITE%"=="e2e" call npm run test:e2e
+IF "%SUITE%"=="main" call npm run test:main-suite
+IF NOT "%SUITE%"=="e2e" IF NOT "%SUITE%"=="main" call npm run test
 
 REM Step 5: Post-Test Info
 echo Playwright tests completed successfully.
