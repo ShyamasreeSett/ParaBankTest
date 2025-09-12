@@ -19,11 +19,11 @@ pipeline {
                 bat "jenkins.bat %SUITE%"
             }
         }
+    }
 
-        stage('Archive Report') {
-            steps {
-                archiveArtifacts artifacts: 'test-report/**', allowEmptyArchive: true
-            }
+    post {
+        always {
+            archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
         }
     }
 }
