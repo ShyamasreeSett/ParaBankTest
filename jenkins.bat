@@ -39,10 +39,10 @@ IF EXIST playwright-report (
 REM Step 4: Run Playwright E2E tests
 IF "%SUITE%"=="e2e" (
     echo Running E2E tests...
-    npm run test e2e
+    npm run test:e2e
 ) ELSE IF "%SUITE%"=="main" (
     echo Running Main Suite tests...
-    npm run test main-suite
+    npm run test:main-suite
 ) ELSE (
     echo WARNING: Invalid suite parameter. Use 'e2e' or 'main'. Running all tests by default
     npm run test

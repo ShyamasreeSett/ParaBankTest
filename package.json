@@ -6,8 +6,8 @@
   "scripts": {
     "test": "npx playwright test",
     "test:ci": "npx playwright test --reporter=list",
-    "test e2e": "npx playwright test --grep \"@e2e\"",
-    "test main-suite": "npx playwright test --grep-invert \"@e2e\""
+    "test:e2e": "npx playwright test --grep \"@e2e\"",
+    "test:main-suite": "npx playwright test --grep-invert \"@e2e\""
   },
   "keywords": [],
   "author": "",
