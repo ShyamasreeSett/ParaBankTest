@@ -51,4 +51,3 @@ echo Reports are located in playwright-report\
 
 echo Playwright CI pipeline finished
 echo -------------------------------
-pause
