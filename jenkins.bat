@@ -20,16 +20,7 @@ cd /d %~dp0
 REM Step 2: Clean node_modules and install dependencies
 echo Installing dependencies via npm ci...
 echo -------------------------------
-
-IF EXIST node_modules (
-    rmdir /s /q node_modules
-)
 npm ci
-IF ERRORLEVEL 1 (
-    call echo ERROR: npm ci failed. Exiting.
-    call exit /b 1
-)
-
 
 REM Step 3: Run Playwright E2E tests
 echo Installing tests
