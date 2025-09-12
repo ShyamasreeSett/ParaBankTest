@@ -21,9 +21,10 @@ REM Step 2: Clean node_modules and install dependencies
 echo Installing dependencies via npm ci...
 echo -------------------------------
 call npm ci
+call npx playwright install --with-deps
 
 REM Step 3: Run Playwright E2E tests
-echo Installing tests
+echo running playwright tests
 echo -------------------------------
 IF "%SUITE%"=="e2e" call npm run test:e2e
 IF "%SUITE%"=="main" call npm run test:main-suite
