@@ -20,22 +20,18 @@ cd /d %~dp0
 REM Step 2: Clean node_modules and install dependencies
 echo Installing dependencies via npm ci...
 echo -------------------------------
-npm ci
-
-echo Current folder: %CD%
-node -v
-npm -v
+call npm ci
 
 REM Step 3: Run Playwright E2E tests
 echo Installing tests
 echo -------------------------------
-
-npm run test:e2e
+IF "%SUITE%"=="e2e" call npm run test:e2e
+IF "%SUITE%"=="main" call npm run test:main-suite
+IF NOT "%SUITE%"=="e2e" IF NOT "%SUITE%"=="main" call npm run test
 
 REM Step 4: Post-Test Info
 echo Playwright tests completed successfully.
 echo Reports are located in playwright-report\
-
 
 echo Playwright CI pipeline finished
 echo -------------------------------
