@@ -1,14 +1,15 @@
-import { gotoURL, test, expect, registerUserAndLogout } from '@base/baseTest';
+import { gotoURL, test, expect, registerUserAndLogout, convertAccountBalanceToNumber } from '@base/baseTest';
 import { AccountType } from '@resources/accountType.enum';
 import { ACCOUNT_OVERVIEWPAGE, TRANSFERPAGE } from '@resources/constants';
 import { getTransactions } from '@utils/apiHelper';
 import { generatePayeeData } from '@utils/generateBeneficiary';
+
 import * as dotenv from 'dotenv';
 
 // Load env file
 dotenv.config();
 
-test.beforeEach(async ({ page, context, loginPage, navigationPanel, registerFormPage }) => {
+test.beforeEach(async ({ page, context }) => {
      // Clear cookies
      await context.clearCookies();
 
@@ -17,7 +18,7 @@ test.beforeEach(async ({ page, context, loginPage, navigationPanel, registerForm
      await gotoURL(page);
 })
 
-test("@e2e Test end to end Scenario", async ({ page, navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage, homePage, loginPage, registerFormPage, billPaymentFormPage, billPayPage, request }) => {
+test("@e2e Verify end to end account fund transfer scenario", async ({ page, navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage, homePage, loginPage, registerFormPage, billPaymentFormPage, billPayPage, request }) => {
 
      //________________________________________________________________________________
      //Step 2: Create a new user from user registration page.
@@ -130,8 +131,3 @@ test("@e2e Test end to end Scenario", async ({ page, navigationPanel, openNewAcc
           ])
      );
 });
-
-
-async function convertAccountBalanceToNumber(balance: string) {
-     return Number(balance.replace('$', '').trim());
-}

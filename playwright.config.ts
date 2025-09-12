@@ -5,16 +5,15 @@ export default defineConfig({
   retries: 1,
   use: {
     headless: true,
-    trace: 'retain-on-failure',
+    trace: 'on-first-retry',
     video: 'retain-on-failure',
-    screenshot: 'on',
+    screenshot: 'only-on-failure',
   },
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
@@ -22,8 +21,8 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    }, 
+    },  
   ],
- 
-  reporter: 'html',
+  
+  reporter: [['list'], ['html', { open: 'never' }]],
 });

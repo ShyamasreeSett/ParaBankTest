@@ -1,5 +1,3 @@
-export const PARABANKURL = 'https://parabank.parasoft.com/';
-
 export const WELCOMEPAGE = {
     TITLE: 'Welcome ',
     DESCIPTION: 'Your account was created successfully. You are now logged in.'

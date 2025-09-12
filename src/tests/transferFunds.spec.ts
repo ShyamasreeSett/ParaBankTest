@@ -99,7 +99,3 @@ async function openNewAccountForUser(navigationPanel: myNavigationPanel, openNew
      await openNewAccount.waitUntilStable();
      await openNewAccount.clickOpenAccountButton();
 }
-
-async function convertAccountBalanceToNumber(balance: string) {
-     return Number(balance.replace('$', '').trim());
-}
