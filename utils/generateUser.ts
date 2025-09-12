@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 export const generateUser = () => {
   // Define firstName first
   const firstName = faker.person.firstName();
-  const baseName = "Sett";
+  const baseName = "Sett1";
   const timestamp = Date.now(); // milliseconds
   const username = baseName + timestamp;
 

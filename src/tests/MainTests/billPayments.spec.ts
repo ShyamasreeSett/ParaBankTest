@@ -1,4 +1,4 @@
-import { gotoURL, test, expect, registerUserAndLogout } from '@base/baseTest';
+import { gotoURL, test, expect, registerUserAndLogout, convertAccountBalanceToNumber } from '@base/baseTest';
 import { myNavigationPanel } from '@pages/navigationPanel.page';
 import { myOpenNewAccountPage } from '@pages/openNewAccount.page';
 import { AccountType } from '@resources/accountType.enum';
