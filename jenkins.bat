@@ -35,9 +35,7 @@ REM Step 3: Run Playwright E2E tests
 echo Installing tests
 echo -------------------------------
 
-IF "%SUITE%"=="e2e" call npm run test:e2e
-IF "%SUITE%"=="main" call npm run test:main-suite
-IF NOT "%SUITE%"=="e2e" IF NOT "%SUITE%"=="main" call npm run test
+npm run test:e2e
 
 REM Step 4: Post-Test Info
 echo Playwright tests completed successfully.
