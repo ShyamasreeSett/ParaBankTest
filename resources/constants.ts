@@ -17,3 +17,9 @@ export const TRANSFERPAGE = {
     AMOUNT: '25.00'
 };
 
+export const API = {
+    STATUS: '200',
+    TYPE: 'Debit',
+    CONTENT_TYPE: 'application/json'
+};
+

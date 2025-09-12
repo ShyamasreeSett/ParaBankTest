@@ -76,12 +76,10 @@ async function registerUserAndLogout(loginPage: myLoginPage, registerFormPage: R
   await navigationPanel.userLogout();
   return newUser;
 }
-async function registerUserAndLogin(loginPage: myLoginPage, registerFormPage: ReturnType<typeof myRegisterFormPage>, navigationPanel: myNavigationPanel) {
-  const newUser = await registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
-  loginPage.enterUsername(newUser.username);
-  loginPage.enterPassword(newUser.password);
-  loginPage.clickLogin();
-
+async function registerUserWOlogout(loginPage: myLoginPage, registerFormPage: ReturnType<typeof myRegisterFormPage>) {
+  await loginPage.clickRegisterLink();
+  const newUser = generateUser();
+  await registerFormPage.fillForm(newUser);
   return newUser;
 }
 
@@ -92,4 +90,4 @@ async function convertAccountBalanceToNumber(balance: string) {
 
 export const test = testPages;
 export const expect = testPages.expect;
-export { gotoURL, registerUserAndLogin, registerUserAndLogout, convertAccountBalanceToNumber };
+export { gotoURL, registerUserWOlogout, registerUserAndLogout, convertAccountBalanceToNumber };

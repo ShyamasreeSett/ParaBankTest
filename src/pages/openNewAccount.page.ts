@@ -43,6 +43,7 @@ export class myOpenNewAccountPage {
 
     async isSuccessVisible() {
         try {
+            await this.accountNo.waitFor({ state: 'visible' });
             return (await this.success.isVisible());
         } catch (error) {
             console.error('We did not succeed in opening new account', error);

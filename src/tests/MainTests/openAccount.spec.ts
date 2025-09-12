@@ -1,24 +1,21 @@
-import { gotoURL, test, expect } from '@base/baseTest';
+import { gotoURL, test, expect, registerUserWOlogout } from '@base/baseTest';
 import { AccountType } from '@resources/accountType.enum';
 
 
-test.beforeEach(async ({ page, loginPage }) => {
+test.beforeEach(async ({ page, loginPage, registerFormPage }) => {
      await gotoURL(page);
 
-     //Login with the new unique user
-     await loginPage.enterUsername('shya11');
-     await loginPage.enterPassword('shya11!');
-     await loginPage.clickLogin();
+     //Register with the new unique user
+     const newUser = await registerUserWOlogout(loginPage, registerFormPage);
 })
 
 test("test successful account opening", async ({ navigationPanel, openNewAccount }) => {
+     test.info().annotations.push({ type: "TestCaseID", description: "TC-008" });
 
      //Click home page icon to navigate to home page
      await navigationPanel.clickOpenNewAccount();
      expect(await openNewAccount.isTitleVisible()).toBe(true);
-     await openNewAccount.selectAccountType(AccountType.SAVINGS);
-     await openNewAccount.waitUntilStable();
-     await openNewAccount.clickOpenAccountButton();
+     await openNewAccount.openNewAccount(AccountType.SAVINGS);
 
      //Verify that account opening was successful
      expect(await openNewAccount.isSuccessVisible()).toBe(true);

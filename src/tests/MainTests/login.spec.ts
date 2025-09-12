@@ -7,6 +7,8 @@ test.beforeEach(async ({ page }) => {
 })
 
 test("test successful login", async ({ loginPage, accountsOverviewPage, navigationPanel, registerFormPage }) => {
+     test.info().annotations.push({ type: "TestCaseID", description: "TC-001" });
+
      //Register new user and logout
      const newUser = registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
 
@@ -25,6 +27,8 @@ test("test successful login", async ({ loginPage, accountsOverviewPage, navigati
 })
 
 test("test unsuccessful login with null password", async ({ loginPage, navigationPanel, registerFormPage }) => {
+     test.info().annotations.push({ type: "TestCaseID", description: "TC-002" });
+
      //Register new user and logout
      const newUser = registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
 
@@ -38,8 +42,9 @@ test("test unsuccessful login with null password", async ({ loginPage, navigatio
      expect(await loginPage.getErrorDesription())
           .toBe(LOGINPAGE.ERROR_DESC);
 })
-test("test unsuccessful login with null username and password", async ({ loginPage }) => {
 
+test("test unsuccessful login with null username and password", async ({ loginPage }) => {
+     test.info().annotations.push({ type: "TestCaseID", description: "TC-003" });
 
      //Do not enter username and password
      await loginPage.clickLogin();

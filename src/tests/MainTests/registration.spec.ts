@@ -8,6 +8,8 @@ test.beforeEach(async ({ page }) => {
 })
 
 test("test successful registration", async ({ loginPage, registerFormPage, welcomePage }) => {
+     test.info().annotations.push({ type: "TestCaseID", description: "TC-004" });
+
      await loginPage.clickRegisterLink();
      // Generate a new user with unique username and password
      const newUser = generateUser();

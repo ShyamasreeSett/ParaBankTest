@@ -1,6 +1,6 @@
 import { gotoURL, test, expect, registerUserAndLogout, convertAccountBalanceToNumber } from '@base/baseTest';
 import { AccountType } from '@resources/accountType.enum';
-import { ACCOUNT_OVERVIEWPAGE, TRANSFERPAGE } from '@resources/constants';
+import { ACCOUNT_OVERVIEWPAGE, TRANSFERPAGE, API } from '@resources/constants';
 import { getTransactions } from '@utils/apiHelper';
 import { generatePayeeData } from '@utils/generateBeneficiary';
 
@@ -20,114 +20,110 @@ test.beforeEach(async ({ page, context }) => {
 
 test("@e2e Verify end to end account fund transfer scenario", async ({ page, navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage, homePage, loginPage, registerFormPage, billPaymentFormPage, billPayPage, request }) => {
 
-     //________________________________________________________________________________
-     //Step 2: Create a new user from user registration page.
-     const newUser = await registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
+     // Step 2
+     const newUser = await test.step("Step 2: Create a new user from user registration page.", async () => {
+          return await registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
+     });
 
-     //________________________________________________________________________________
-     //Step 3: Login to the application with the user created in step 2.
-     await loginPage.login(newUser.username, newUser.password);
+     // Step 3
+     const sessionCookie = await test.step("Step 3: Login to the application with the user created in step 2.", async () => {
+          await loginPage.login(newUser.username, newUser.password);
 
-     // Grab cookies after login
-     const cookies = await page.context().cookies();
-     const sessionCookie = cookies.find(c => c.name === 'JSESSIONID');
+          const cookies = await page.context().cookies();
+          return cookies.find(c => c.name === "JSESSIONID");
+     });
 
-     //________________________________________________________________________________
-     //Step 4: Verify if the Global navigation menu in home page is working as expected.
-     await navigationPanel.clickHomePage();
-     expect(await homePage.isATMServiceAvailable()).toBe(true);
+     // Step 4
+     const { originalAccount, originalAccountBalance } = await test.step("Step 4: Verify if the Global navigation menu in home page is working as expected.", async () => {
+          await navigationPanel.clickHomePage();
+          expect(await homePage.isATMServiceAvailable()).toBe(true);
 
-     //1st get the original account no 
-     await navigationPanel.clickAccountOverview();
-     const originalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
-     const originalAccountBalance = await convertAccountBalanceToNumber(originalAccount[1]);
+          await navigationPanel.clickAccountOverview();
+          const acc = await accountsOverviewPage.getAccountOverview1stAccount();
+          return {
+               originalAccount: acc,
+               originalAccountBalance: await convertAccountBalanceToNumber(acc[1]),
+          };
+     });
 
-     //________________________________________________________________________________
-     //Step 5: Create a Savings account from “Open New Account Page” 
-     await navigationPanel.clickOpenNewAccount();
-     expect(await openNewAccount.isTitleVisible()).toBe(true);
-     await openNewAccount.openNewAccount(AccountType.SAVINGS);
+     // Step 5
+     const accountNoNew = await test.step("Step 5: Create a Savings account from Open New Account Page.", async () => {
+          await navigationPanel.clickOpenNewAccount();
+          expect(await openNewAccount.isTitleVisible()).toBe(true);
+          await openNewAccount.openNewAccount(AccountType.SAVINGS);
 
-     //get the new account number
-     const accountNoNew = await openNewAccount.getNewAccountNo();
-     await navigationPanel.clickAccountOverview();
+          return await openNewAccount.getNewAccountNo();
+     });
 
-     //________________________________________________________________________________
-     //Step 6: Validate if Accounts overview page is displaying the balance details as expected.
-     //get the values of balances from the new account
-     const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
-     const newAccountBalance = await convertAccountBalanceToNumber(accountRow[1]);
+     // Step 6
+     const newAccountBalance = await test.step("Step 6: Validate if Accounts overview page is displaying the balance details as expected.", async () => {
+          await navigationPanel.clickAccountOverview();
+          const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+          const bal = await convertAccountBalanceToNumber(accountRow[1]);
 
-     //verify total balance of all accounts is the initial value
-     expect(await accountsOverviewPage.getTotalBalance())
-          .toBe(Number(ACCOUNT_OVERVIEWPAGE.TOTALACCOUNT_BALANCE.replace('$', '').trim()));
+          expect(await accountsOverviewPage.getTotalBalance())
+               .toBe(Number(ACCOUNT_OVERVIEWPAGE.TOTALACCOUNT_BALANCE.replace("$", "").trim()));
 
-     //________________________________________________________________________________
-     //Step 7: Transfer funds from account created in step 5 to another account.
-     await navigationPanel.clickTransferFunds();
-     await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT, accountNoNew, originalAccount[0]);
+          return bal;
+     });
 
-     //Verify that funds transfer was successful
-     expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
+     // Step 7
+     const transferAmountNo = await test.step("Step 7: Transfer funds from account created in step 5 to another account.", async () => {
+          await navigationPanel.clickTransferFunds();
+          await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT, accountNoNew, originalAccount[0]);
 
-     await navigationPanel.clickAccountOverview();
+          expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
 
-     //get all the updated account balances
-     const UpdatedNewAccountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
-     const updatedNewAccountBalance = await convertAccountBalanceToNumber(UpdatedNewAccountRow[1]);
-     const updatedOriginalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
-     const updatedOriginalAccountBalance = await convertAccountBalanceToNumber(updatedOriginalAccount[1]);
-     const transferAmountNo = await convertAccountBalanceToNumber(TRANSFERPAGE.AMOUNT);
+          await navigationPanel.clickAccountOverview();
 
-     //Validate the balances have been updated in Account Overview page
-     expect(updatedNewAccountBalance).toBe(newAccountBalance - transferAmountNo);
-     expect(updatedOriginalAccountBalance).toBe(originalAccountBalance + transferAmountNo - newAccountBalance);
+          const UpdatedNewAccountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+          const updatedNewAccountBalance = await convertAccountBalanceToNumber(UpdatedNewAccountRow[1]);
+          const updatedOriginalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
+          const updatedOriginalAccountBalance = await convertAccountBalanceToNumber(updatedOriginalAccount[1]);
+          const amountNo = await convertAccountBalanceToNumber(TRANSFERPAGE.AMOUNT);
 
-     //________________________________________________________________________________
-     //Step 8: Pay the bill with account created in step 5.
-     await navigationPanel.clickBillPay();
-     const billForm = generatePayeeData(accountNoNew);
+          expect(updatedNewAccountBalance).toBe(newAccountBalance - amountNo);
+          expect(updatedOriginalAccountBalance).toBe(originalAccountBalance + amountNo - newAccountBalance);
 
-     // Fill and submit the bill payment form
-     await billPaymentFormPage.fillForm(billForm);
+          return amountNo;
+     });
 
-     //Verify that funds transfer was successful
-     expect(await billPayPage.isSuccessTitleVisible()).toBe(true);
+     // Step 8
+     const billForm = await test.step("Step 8: Pay the bill with account created in step 5.", async () => {
+          await navigationPanel.clickBillPay();
+          const billForm = generatePayeeData(accountNoNew);
 
-     await navigationPanel.clickAccountOverview();
+          await billPaymentFormPage.fillForm(billForm);
+          expect(await billPayPage.isSuccessTitleVisible()).toBe(true);
 
-     //get all the updated account balances
-     const UpdatedNewAccountRow2: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
-     const updatedNewAccountBalance2 = await convertAccountBalanceToNumber(UpdatedNewAccountRow2[1]);
-     const billAmount = await convertAccountBalanceToNumber(billForm.amount);
+          await navigationPanel.clickAccountOverview();
 
-     //Validate the final amount reflects the transfer and bill payment
-     expect(updatedNewAccountBalance2).toBe(Number((newAccountBalance - transferAmountNo - billAmount).toFixed(2)));
+          const UpdatedNewAccountRow2: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+          const updatedNewAccountBalance2 = await convertAccountBalanceToNumber(UpdatedNewAccountRow2[1]);
+          const amount = await convertAccountBalanceToNumber(billForm.amount);
+          expect(updatedNewAccountBalance2).toBe(Number((newAccountBalance - transferAmountNo - amount).toFixed(2)));
 
-     //_____________________________________________________________________________________________________________
-     // Validate API response: 
-     // Search the transactions using “Find transactions” API call by amount for the bill payment
+          return billForm;
+     });
 
-     const response = await getTransactions(request, accountNoNew, billAmount, sessionCookie.value, process.env.BASE_URL);
+     // API Validation
+     await test.step("Validate API response: Search the transactions using Find transactions API call by amount for the bill payment", async () => {
+          const amount = await convertAccountBalanceToNumber(billForm.amount);
 
-     // Assert status code
-     expect(response.status()).toBe(200);
+          const response = await getTransactions(request, accountNoNew, amount, sessionCookie.value, process.env.BASE_URL);
+          expect(response.status()).toBe(Number(API.STATUS));
+          expect(response.headers()["content-type"]).toContain(API.CONTENT_TYPE);
 
-     // Assert content type is JSON
-     expect(response.headers()['content-type']).toContain('application/json');
-
-     // Parse body
-     const body = await response.json();
-
-     // Validate that the array contains an object with the expected values
-     expect(body).toEqual(
-          expect.arrayContaining([
-               expect.objectContaining({
-                    accountId: Number(accountNoNew),       // convert to number
-                    amount: Number(billForm.amount),       // convert to number
-                    description: expect.stringContaining(billForm.payeeName),
-                    type: 'Debit',
-               }),
-          ])
-     );
+          const body = await response.json();
+          expect(body).toEqual(
+               expect.arrayContaining([
+                    expect.objectContaining({
+                         accountId: Number(accountNoNew),
+                         amount: Number(amount),
+                         description: expect.stringContaining(billForm.payeeName), // adjust if needed
+                         type: API.TYPE,
+                    }),
+               ])
+          );
+     });
 });

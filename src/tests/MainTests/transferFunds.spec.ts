@@ -1,25 +1,21 @@
-import { gotoURL, test, expect, registerUserAndLogout, convertAccountBalanceToNumber } from '@base/baseTest';
+import { gotoURL, test, expect, convertAccountBalanceToNumber, registerUserWOlogout } from '@base/baseTest';
 import { myNavigationPanel } from '@pages/navigationPanel.page';
 import { myOpenNewAccountPage } from '@pages/openNewAccount.page';
 import { AccountType } from '@resources/accountType.enum';
 import { TRANSFERPAGE } from '@resources/constants';
 
 
-test.beforeEach(async ({ page, context, loginPage, navigationPanel, registerFormPage }) => {
+test.beforeEach(async ({ page, context, loginPage, registerFormPage }) => {
      // Clear cookies
      await context.clearCookies();
      await gotoURL(page);
 
-     //Login with the new unique user
-     const newUser = registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
-
-     //Login with the new unique user
-     await loginPage.enterUsername((await newUser).username);
-     await loginPage.enterPassword((await newUser).password);
-     await loginPage.clickLogin();
+     //Register with the new unique user
+     const newUser = await registerUserWOlogout(loginPage, registerFormPage);
 })
 
 test("test transfer funds success", async ({ navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage }) => {
+     test.info().annotations.push({ type: "TestCaseID", description: "TC-009" });
 
      //1st get the original account no to get transfer to fund
      await navigationPanel.clickAccountOverview();
@@ -37,10 +33,8 @@ test("test transfer funds success", async ({ navigationPanel, openNewAccount, ac
 
      //Perform funds transfer
      await navigationPanel.clickTransferFunds();
-     await transferFundsPage.enterTransferAmount(TRANSFERPAGE.AMOUNT);
-     await transferFundsPage.selectFromAccount(accountNoNew);
-     await transferFundsPage.selectToAccount(originalAccount[0]);
-     await transferFundsPage.clickTransferButton();
+     await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT, accountNoNew, originalAccount[0]);
+
 
      //Verify that funds transfer was successful
      expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
@@ -49,6 +43,7 @@ test("test transfer funds success", async ({ navigationPanel, openNewAccount, ac
 })
 
 test("test end to end Fund Transfer Scenario", async ({ navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage }) => {
+     test.info().annotations.push({ type: "TestCaseID", description: "TC-010" });
 
      //1st get the original account no to get transfer to fund
      await navigationPanel.clickAccountOverview();
@@ -68,10 +63,7 @@ test("test end to end Fund Transfer Scenario", async ({ navigationPanel, openNew
 
      //Perform funds transfer
      await navigationPanel.clickTransferFunds();
-     await transferFundsPage.enterTransferAmount(TRANSFERPAGE.AMOUNT);
-     await transferFundsPage.selectFromAccount(accountNoNew);
-     await transferFundsPage.selectToAccount(originalAccount[0]);
-     await transferFundsPage.clickTransferButton();
+     await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT, accountNoNew, originalAccount[0]);
 
      //Verify that funds transfer was successful
      expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
