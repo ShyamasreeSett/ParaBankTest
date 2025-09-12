@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS-16'
+    }
+
     parameters {
         choice(
             name: 'SUITE',

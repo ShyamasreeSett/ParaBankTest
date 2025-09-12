@@ -22,6 +22,10 @@ echo Installing dependencies via npm ci...
 echo -------------------------------
 npm ci
 
+echo Current folder: %CD%
+node -v
+npm -v
+
 REM Step 3: Run Playwright E2E tests
 echo Installing tests
 echo -------------------------------
