@@ -22,7 +22,7 @@ pipeline {
 
         stage('Archive Report') {
             steps {
-                archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'test-report/**', allowEmptyArchive: true
             }
         }
     }
