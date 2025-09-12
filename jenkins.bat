@@ -26,31 +26,31 @@ IF EXIST node_modules (
 )
 npm ci
 IF ERRORLEVEL 1 (
-    echo ERROR: npm ci failed. Exiting.
-    exit /b 1
+    call echo ERROR: npm ci failed. Exiting.
+    call exit /b 1
 )
 
 REM Step 3: Clean previous Playwright reports
 IF EXIST playwright-report (
-    echo Removing old Playwright report...
-    rmdir /s /q playwright-report
+    call echo Removing old Playwright report...
+    call rmdir /s /q playwright-report
 )
 
 REM Step 4: Run Playwright E2E tests
 IF "%SUITE%"=="e2e" (
-    echo Running E2E tests...
-    npm run test:e2e
+    call echo Running E2E tests...
+    call npm run test:e2e
 ) ELSE IF "%SUITE%"=="main" (
-    echo Running Main Suite tests...
-    npm run test:main-suite
+    call echo Running Main Suite tests...
+    call npm run test:main-suite
 ) ELSE (
-    echo WARNING: Invalid suite parameter. Use 'e2e' or 'main'. Running all tests by default
-    npm run test
+    call echo WARNING: Invalid suite parameter. Use 'e2e' or 'main'. Running all tests by default
+    call npm run test
 )
 
 IF ERRORLEVEL 1 (
-    echo ERROR: Playwright tests failed.
-    exit /b 1
+    call echo ERROR: Playwright tests failed.
+    call exit /b 1
 )
 
 REM Step 5: Post-Test Info
