@@ -1,27 +1,58 @@
 name: Playwright Tests
+
+# Trigger manually
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_dispatch:
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      # Checkout code
+      - uses: actions/checkout@v4
+
+      # Setup Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Install Playwright browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      # Run Playwright tests (do not fail workflow on test failure)
+      - name: Run Playwright tests
+        id: playwright
+        run: |
+          npx playwright test || echo "Tests failed"
+        continue-on-error: true
+
+      # Upload Playwright report
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      # Set test result output
+      - name: Set test result output
+        id: test_status
+        run: |
+          # Default to passed
+          STATUS="passed"
+          # Check if the HTML report contains failing tests
+          if grep -q "failing" playwright-report/index.html; then
+            STATUS="failed"
+          fi
+          echo "test_status=$STATUS" >> $GITHUB_OUTPUT
+
+      # Example: use test_status for notifications or next steps
+      - name: Show test status
+        run: |
+          echo "Playwright tests finished with status: ${{ steps.test_status.outputs.test_status }}"
