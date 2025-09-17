@@ -13,6 +13,9 @@ POM
 --- Created a Base Test fixture under base folder which acts as an function with common setup for the tests as well as initiates the page objects  
 --- Created a POJO for the registration form page  
 --- Used faker to create random user data. Concatenated timestamp to firstname to generate username to make it unique  
+--- e2e test added for entire flow, other granular tests present.
+--- cross browser testing across chrome, firefox, webkit
+--- 1 test fails due to a bug in the application, fails in each browser
 
 # Test Execution Steps
 
