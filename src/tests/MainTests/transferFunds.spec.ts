@@ -11,7 +11,7 @@ test.beforeEach(async ({ page, context, loginPage, registerFormPage }) => {
      await gotoURL(page);
 
      //Register with the new unique user
-     const newUser = await registerUserWOlogout(loginPage, registerFormPage);
+     await registerUserWOlogout(loginPage, registerFormPage);
 })
 
 test("test transfer funds success", async ({ navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage }) => {
@@ -27,9 +27,6 @@ test("test transfer funds success", async ({ navigationPanel, openNewAccount, ac
      //get the new account number
      const accountNoNew = await openNewAccount.getNewAccountNo();
      await navigationPanel.clickAccountOverview();
-
-     //get the valuesof balances from the new account
-     const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
 
      //Perform funds transfer
      await navigationPanel.clickTransferFunds();
@@ -57,7 +54,7 @@ test("test end to end Fund Transfer Scenario", async ({ navigationPanel, openNew
      const accountNoNew = await openNewAccount.getNewAccountNo();
      await navigationPanel.clickAccountOverview();
 
-     //get the valuesof balances from the new account
+     //get the values of balances from the new account
      const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
      const newAccountBalance = await convertAccountBalanceToNumber(accountRow[1]);
 

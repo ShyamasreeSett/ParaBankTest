@@ -1,4 +1,4 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
 
 export class myTranferFundsPage {
     readonly page: Page;
@@ -11,8 +11,8 @@ export class myTranferFundsPage {
     constructor(page: Page) {
         this.page = page;
         this.amount = page.locator('#amount');
-        this.transfer = page.getByRole('button', { name: 'Transfer' });
-        this.title = page.locator('.title', { hasText: 'Transfer Complete!' });
+        this.transfer = page.getByRole('button', {name: 'Transfer'});
+        this.title = page.locator('.title', {hasText: 'Transfer Complete!'});
         this.successDesc = this.title.locator('xpath=following-sibling::p[1]');
     }
 
@@ -50,7 +50,7 @@ export class myTranferFundsPage {
 
     async isSuccessTitleVisible() {
         try {
-            await this.title.waitFor({ state: 'visible' });
+            await this.title.waitFor({state: 'visible'});
             return (await this.title.isVisible());
         } catch (error) {
             console.error('success title is not displayed after transfer ', error);
@@ -68,9 +68,9 @@ export class myTranferFundsPage {
         }
     }
 
-    async transferFund(amount: string, accountnoNew: string, accountNoOld: string) {
+    async transferFund(amount: string, accountNoNew: string, accountNoOld: string) {
         await this.enterTransferAmount(amount);
-        await this.selectFromAccount(accountnoNew);
+        await this.selectFromAccount(accountNoNew);
         await this.selectToAccount(accountNoOld);
         await this.clickTransferButton();
     }

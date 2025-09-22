@@ -1,129 +1,144 @@
-import { gotoURL, test, expect, registerUserAndLogout, convertAccountBalanceToNumber } from '@base/baseTest';
-import { AccountType } from '@resources/accountType.enum';
-import { ACCOUNT_OVERVIEWPAGE, TRANSFERPAGE, API } from '@resources/constants';
-import { getTransactions } from '@utils/apiHelper';
-import { generatePayeeData } from '@utils/generateBeneficiary';
+import {convertAccountBalanceToNumber, expect, gotoURL, registerUserAndLogout, test} from '@base/baseTest';
+import {AccountType} from '@resources/accountType.enum';
+import {ACCOUNT_OVERVIEWPAGE, API, TRANSFERPAGE} from '@resources/constants';
+import {getTransactions} from '@utils/apiHelper';
+import {generatePayeeData} from '@utils/generateBeneficiary';
 
 import * as dotenv from 'dotenv';
 
 // Load env file
 dotenv.config();
 
-test.beforeEach(async ({ page, context }) => {
-     // Clear cookies
-     await context.clearCookies();
+test.beforeEach(async ({page, context}) => {
+    // Clear cookies
+    await context.clearCookies();
 
-     //________________________________________________________________________________
-     //Step 1: Navigate to Para bank application.
-     await gotoURL(page);
+    //________________________________________________________________________________
+    //Step 1: Navigate to Para bank application.
+    await gotoURL(page);
 })
 
-test("@e2e Verify end to end account fund transfer scenario", async ({ page, navigationPanel, openNewAccount, accountsOverviewPage, transferFundsPage, homePage, loginPage, registerFormPage, billPaymentFormPage, billPayPage, request }) => {
+test("@e2e Verify end to end account fund transfer scenario", async ({
+                                                                         page,
+                                                                         navigationPanel,
+                                                                         openNewAccount,
+                                                                         accountsOverviewPage,
+                                                                         transferFundsPage,
+                                                                         homePage,
+                                                                         loginPage,
+                                                                         registerFormPage,
+                                                                         billPaymentFormPage,
+                                                                         billPayPage,
+                                                                         request
+                                                                     }) => {
 
-     // Step 2
-     const newUser = await test.step("Step 2: Create a new user from user registration page.", async () => {
-          return await registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
-     });
+    // Step 2
+    const newUser = await test.step("Step 2: Create a new user from user registration page.", async () => {
+        return await registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
+    });
 
-     // Step 3
-     const sessionCookie = await test.step("Step 3: Login to the application with the user created in step 2.", async () => {
-          await loginPage.login(newUser.username, newUser.password);
+    // Step 3
+    const sessionCookie = await test.step("Step 3: Login to the application with the user created in step 2.", async () => {
+        await loginPage.login(newUser.username, newUser.password);
 
-          const cookies = await page.context().cookies();
-          return cookies.find(c => c.name === "JSESSIONID");
-     });
+        const cookies = await page.context().cookies();
+        return cookies.find(c => c.name === "JSESSIONID");
+    });
 
-     // Step 4
-     const { originalAccount, originalAccountBalance } = await test.step("Step 4: Verify if the Global navigation menu in home page is working as expected.", async () => {
-          await navigationPanel.clickHomePage();
-          expect(await homePage.isATMServiceAvailable()).toBe(true);
+    // Step 4
+    const {
+        originalAccount,
+        originalAccountBalance
+    } = await test.step("Step 4: Verify if the Global navigation menu in home page is working as expected.", async () => {
+        await navigationPanel.clickHomePage();
+        expect(await homePage.isATMServiceAvailable()).toBe(true);
 
-          await navigationPanel.clickAccountOverview();
-          const acc = await accountsOverviewPage.getAccountOverview1stAccount();
-          return {
-               originalAccount: acc,
-               originalAccountBalance: await convertAccountBalanceToNumber(acc[1]),
-          };
-     });
+        await navigationPanel.clickAccountOverview();
+        const acc = await accountsOverviewPage.getAccountOverview1stAccount();
+        return {
+            originalAccount: acc,
+            originalAccountBalance: await convertAccountBalanceToNumber(acc[1]),
+        };
+    });
 
-     // Step 5
-     const accountNoNew = await test.step("Step 5: Create a Savings account from Open New Account Page.", async () => {
-          await navigationPanel.clickOpenNewAccount();
-          expect(await openNewAccount.isTitleVisible()).toBe(true);
-          await openNewAccount.openNewAccount(AccountType.SAVINGS);
+    // Step 5
+    const accountNoNew = await test.step("Step 5: Create a Savings account from Open New Account Page.", async () => {
+        await navigationPanel.clickOpenNewAccount();
+        expect(await openNewAccount.isTitleVisible()).toBe(true);
+        await openNewAccount.openNewAccount(AccountType.SAVINGS);
 
-          return await openNewAccount.getNewAccountNo();
-     });
+        return await openNewAccount.getNewAccountNo();
+    });
 
-     // Step 6
-     const newAccountBalance = await test.step("Step 6: Validate if Accounts overview page is displaying the balance details as expected.", async () => {
-          await navigationPanel.clickAccountOverview();
-          const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
-          const bal = await convertAccountBalanceToNumber(accountRow[1]);
+    // Step 6
+    const newAccountBalance = await test.step("Step 6: Validate if Accounts overview page is displaying the balance details as expected.", async () => {
+        await navigationPanel.clickAccountOverview();
+        const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+        const bal = await convertAccountBalanceToNumber(accountRow[1]);
 
-          expect(await accountsOverviewPage.getTotalBalance())
-               .toBe(Number(ACCOUNT_OVERVIEWPAGE.TOTALACCOUNT_BALANCE.replace("$", "").trim()));
+        expect(await accountsOverviewPage.getTotalBalance())
+            .toBe(Number(ACCOUNT_OVERVIEWPAGE.TOTALACCOUNT_BALANCE.replace("$", "").trim()));
 
-          return bal;
-     });
+        return bal;
+    });
 
-     // Step 7
-     const transferAmountNo = await test.step("Step 7: Transfer funds from account created in step 5 to another account.", async () => {
-          await navigationPanel.clickTransferFunds();
-          await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT, accountNoNew, originalAccount[0]);
+    // Step 7
+    const transferAmountNo = await test.step("Step 7: Transfer funds from account created in step 5 to another account.", async () => {
+        await navigationPanel.clickTransferFunds();
+        await transferFundsPage.transferFund(TRANSFERPAGE.AMOUNT, accountNoNew, originalAccount[0]);
 
-          expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
+        expect(await transferFundsPage.isSuccessTitleVisible()).toBe(true);
 
-          await navigationPanel.clickAccountOverview();
+        await navigationPanel.clickAccountOverview();
 
-          const UpdatedNewAccountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
-          const updatedNewAccountBalance = await convertAccountBalanceToNumber(UpdatedNewAccountRow[1]);
-          const updatedOriginalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
-          const updatedOriginalAccountBalance = await convertAccountBalanceToNumber(updatedOriginalAccount[1]);
-          const amountNo = await convertAccountBalanceToNumber(TRANSFERPAGE.AMOUNT);
+        const UpdatedNewAccountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+        const updatedNewAccountBalance = await convertAccountBalanceToNumber(UpdatedNewAccountRow[1]);
+        const updatedOriginalAccount = await accountsOverviewPage.getAccountOverview1stAccount();
+        const updatedOriginalAccountBalance = await convertAccountBalanceToNumber(updatedOriginalAccount[1]);
+        const amountNo = await convertAccountBalanceToNumber(TRANSFERPAGE.AMOUNT);
 
-          expect(updatedNewAccountBalance).toBe(newAccountBalance - amountNo);
-          expect(updatedOriginalAccountBalance).toBe(originalAccountBalance + amountNo - newAccountBalance);
+        expect(updatedNewAccountBalance).toBe(newAccountBalance - amountNo);
+        expect(updatedOriginalAccountBalance).toBe(originalAccountBalance + amountNo - newAccountBalance);
 
-          return amountNo;
-     });
+        return amountNo;
+    });
 
-     // Step 8
-     const billForm = await test.step("Step 8: Pay the bill with account created in step 5.", async () => {
-          await navigationPanel.clickBillPay();
-          const billForm = generatePayeeData(accountNoNew);
+    // Step 8
+    const billForm = await test.step("Step 8: Pay the bill with account created in step 5.", async () => {
+        await navigationPanel.clickBillPay();
+        const billForm = generatePayeeData(accountNoNew);
 
-          await billPaymentFormPage.fillForm(billForm);
-          expect(await billPayPage.isSuccessTitleVisible()).toBe(true);
+        await billPaymentFormPage.fillForm(billForm);
+        expect(await billPayPage.isSuccessTitleVisible()).toBe(true);
 
-          await navigationPanel.clickAccountOverview();
+        await navigationPanel.clickAccountOverview();
 
-          const UpdatedNewAccountRow2: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
-          const updatedNewAccountBalance2 = await convertAccountBalanceToNumber(UpdatedNewAccountRow2[1]);
-          const amount = await convertAccountBalanceToNumber(billForm.amount);
-          expect(updatedNewAccountBalance2).toBe(Number((newAccountBalance - transferAmountNo - amount).toFixed(2)));
+        const UpdatedNewAccountRow2: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
+        const updatedNewAccountBalance2 = await convertAccountBalanceToNumber(UpdatedNewAccountRow2[1]);
+        const amount = await convertAccountBalanceToNumber(billForm.amount);
+        expect(updatedNewAccountBalance2).toBe(Number((newAccountBalance - transferAmountNo - amount).toFixed(2)));
 
-          return billForm;
-     });
+        return billForm;
+    });
 
-     // API Validation
-     await test.step("Validate API response: Search the transactions using Find transactions API call by amount for the bill payment", async () => {
-          const amount = await convertAccountBalanceToNumber(billForm.amount);
+    // API Validation
+    await test.step("Validate API response: Search the transactions using Find transactions API call by amount for the bill payment", async () => {
+        const amount = await convertAccountBalanceToNumber(billForm.amount);
 
-          const response = await getTransactions(request, accountNoNew, amount, sessionCookie.value, process.env.BASE_URL);
-          expect(response.status()).toBe(Number(API.STATUS));
-          expect(response.headers()["content-type"]).toContain(API.CONTENT_TYPE);
+        const response = await getTransactions(request, accountNoNew, amount, sessionCookie.value, process.env.BASE_URL);
+        expect(response.status()).toBe(Number(API.STATUS));
+        expect(response.headers()["content-type"]).toContain(API.CONTENT_TYPE);
 
-          const body = await response.json();
-          expect(body).toEqual(
-               expect.arrayContaining([
-                    expect.objectContaining({
-                         accountId: Number(accountNoNew),
-                         amount: Number(amount),
-                         description: expect.stringContaining(billForm.payeeName), // adjust if needed
-                         type: API.TYPE,
-                    }),
-               ])
-          );
-     });
+        const body = await response.json();
+        expect(body).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    accountId: Number(accountNoNew),
+                    amount: Number(amount),
+                    description: expect.stringContaining(billForm.payeeName), // adjust if needed
+                    type: API.TYPE,
+                }),
+            ])
+        );
+    });
 });

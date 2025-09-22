@@ -9,7 +9,7 @@ test.beforeEach(async ({ page, loginPage, navigationPanel, openNewAccount, regis
      await gotoURL(page);
 
      //Register with the new unique user
-     const newUser = await registerUserWOlogout(loginPage, registerFormPage);
+     await registerUserWOlogout(loginPage, registerFormPage);
 
      //Open new account 
      await navigationPanel.clickOpenNewAccount();
@@ -30,18 +30,9 @@ test("test account number is created upon new account opening ", async ({ openNe
 
 test("test account balance upon new account opening", async ({ navigationPanel, openNewAccount, accountsOverviewPage }) => {
      test.info().annotations.push({ type: "TestCaseID", description: "TC-007" });
-
-     //get the new account number
-     const accountNo = await openNewAccount.getNewAccountNo();
      await navigationPanel.clickAccountOverview();
 
-     //get the valuesof balances from the new account
-     const accountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNo);
-
-     //get the new account balance 
-     const newAccountBalance = accountRow[1];
-
-     //verify total balance of all accounts is the initail value
+     //verify total balance of all accounts is the initial value
      expect(await accountsOverviewPage.getTotalBalance())
           .toBe(Number(ACCOUNT_OVERVIEWPAGE.TOTALACCOUNT_BALANCE.replace('$', '').trim()));
 

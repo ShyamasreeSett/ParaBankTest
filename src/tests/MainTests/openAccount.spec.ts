@@ -6,7 +6,7 @@ test.beforeEach(async ({ page, loginPage, registerFormPage }) => {
      await gotoURL(page);
 
      //Register with the new unique user
-     const newUser = await registerUserWOlogout(loginPage, registerFormPage);
+     await registerUserWOlogout(loginPage, registerFormPage);
 })
 
 test("test successful account opening", async ({ navigationPanel, openNewAccount }) => {
