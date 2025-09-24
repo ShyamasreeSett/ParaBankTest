@@ -75,9 +75,9 @@ test("test end to end Fund Transfer Scenario", async ({
     const UpdatedNewAccountRow: string[] = await accountsOverviewPage.getAccountOverviewRow(accountNoNew);
     const updatedNewAccountBalance = await convertAccountBalanceToNumber(UpdatedNewAccountRow[1]);
     const billAmount = await convertAccountBalanceToNumber(billForm.amount);
-    const originalbalance = await convertAccountBalanceToNumber(newAccountBalance);
+    const originalBalance = await convertAccountBalanceToNumber(newAccountBalance);
 
-    expect(updatedNewAccountBalance).toBe(originalbalance - billAmount);
+    expect(updatedNewAccountBalance).toBe(originalBalance - billAmount);
 })
 
 async function openNewAccountForUser(navigationPanel: myNavigationPanel, openNewAccount: myOpenNewAccountPage) {

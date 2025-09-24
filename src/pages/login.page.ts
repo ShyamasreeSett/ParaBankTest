@@ -1,4 +1,5 @@
-import { type Locator, type Page } from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
+import {NA} from "@resources/constants";
 
 export class myLoginPage {
     readonly page: Page;
@@ -9,12 +10,12 @@ export class myLoginPage {
     readonly errorTitle: Locator;
     readonly errorDescription: Locator;
 
-    //constructor 
+    //constructor
     constructor(page: Page) {
         this.page = page;
         this.username = page.locator('[name="username"]'); //element by locator with name attribute
         this.password = page.locator('[name="password"]');
-        this.register = page.getByRole('link', { name: 'Register' }); //element by role with text
+        this.register = page.getByRole('link', {name: 'Register'}); //element by role with text
         this.loginButton = page.locator('[type="submit"]');
         this.errorTitle = page.locator('.title'); //element by text
         this.errorDescription = page.locator('.error'); //element by text
@@ -23,7 +24,7 @@ export class myLoginPage {
 
     async enterUsername(user: string) {
         try {
-            await this.username.waitFor({ state: 'visible' }); //wait till the login form is loaded
+            await this.username.waitFor({state: 'visible'}); //wait till the login form is loaded
             await this.username.fill(user);
         } catch (error) {
             console.error('Unable to enter username in the Username text field in the login page', error);
@@ -54,19 +55,21 @@ export class myLoginPage {
         }
     }
 
-    async getErrorTitle() {
+    async getErrorTitle(): Promise<string> {
         try {
             return await this.errorTitle.textContent();
         } catch (error) {
             console.error('Error while trying to get error title in the login page', error);
+            return NA;
         }
     }
 
-    async getErrorDesription() {
+    async getErrorDescription(): Promise<string> {
         try {
             return await this.errorDescription.textContent();
         } catch (error) {
             console.error('Error while trying to get error description in the login page', error);
+            return NA;
         }
     }
 
@@ -76,6 +79,4 @@ export class myLoginPage {
         await this.clickLogin();
 
     }
-
-
 }

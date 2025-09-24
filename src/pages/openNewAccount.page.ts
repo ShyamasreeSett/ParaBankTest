@@ -1,4 +1,5 @@
-import { type Locator, type Page } from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
+import {NA} from "@resources/constants";
 
 export class myOpenNewAccountPage {
     readonly page: Page;
@@ -10,13 +11,13 @@ export class myOpenNewAccountPage {
     //constructor 
     constructor(page: Page) {
         this.page = page;
-        this.title = page.locator('.title', { hasText: 'Open New Account' });
-        this.submit = page.getByRole('button', { name: 'Open New Account' });
-        this.success = page.locator('.title', { hasText: 'Account Opened!' });
+        this.title = page.locator('.title', {hasText: 'Open New Account'});
+        this.submit = page.getByRole('button', {name: 'Open New Account'});
+        this.success = page.locator('.title', {hasText: 'Account Opened!'});
         this.accountNo = page.locator('#newAccountId');
     }
 
-    async isTitleVisible() {
+    async isTitleVisible(): Promise<boolean> {
         try {
             return (await this.title.isVisible());
         } catch (error) {
@@ -41,9 +42,9 @@ export class myOpenNewAccountPage {
         }
     }
 
-    async isSuccessVisible() {
+    async isSuccessVisible(): Promise<boolean> {
         try {
-            await this.accountNo.waitFor({ state: 'visible' });
+            await this.accountNo.waitFor({state: 'visible'});
             return (await this.success.isVisible());
         } catch (error) {
             console.error('We did not succeed in opening new account', error);
@@ -51,13 +52,13 @@ export class myOpenNewAccountPage {
         }
     }
 
-    async getNewAccountNo() {
+    async getNewAccountNo(): Promise<string> {
         try {
-            await this.accountNo.waitFor({ state: 'visible' });
+            await this.accountNo.waitFor({state: 'visible'});
             return (await this.accountNo.textContent());
         } catch (error) {
             console.error('We did not succeed to get a new account number', error);
-            return null;
+            return NA;
         }
     }
 

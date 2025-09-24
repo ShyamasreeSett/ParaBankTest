@@ -1,10 +1,11 @@
 import {convertAccountBalanceToNumber, expect, gotoURL, registerUserAndLogout, test} from '@base/baseTest';
 import {AccountType} from '@resources/accountType.enum';
-import {ACCOUNT_OVERVIEWPAGE, API, TRANSFERPAGE} from '@resources/constants';
+import {API, TRANSFERPAGE} from '@resources/constants';
 import {getTransactions} from '@utils/apiHelper';
 import {generatePayeeData} from '@utils/generateBeneficiary';
 
 import * as dotenv from 'dotenv';
+import {label} from "allure-js-commons";
 
 // Load env file
 dotenv.config();
@@ -32,7 +33,7 @@ test("@e2e Verify end to end account fund transfer scenario", async ({
                                                                          request
                                                                      }) => {
 
-    // Step 2
+    await label('owner', 'Sett');    // Step 2
     const newUser = await test.step("Step 2: Create a new user from user registration page.", async () => {
         return await registerUserAndLogout(loginPage, registerFormPage, navigationPanel);
     });
@@ -48,7 +49,8 @@ test("@e2e Verify end to end account fund transfer scenario", async ({
     // Step 4
     const {
         originalAccount,
-        originalAccountBalance
+        originalAccountBalance,
+        originalTotalBalance
     } = await test.step("Step 4: Verify if the Global navigation menu in home page is working as expected.", async () => {
         await navigationPanel.clickHomePage();
         expect(await homePage.isATMServiceAvailable()).toBe(true);
@@ -58,6 +60,7 @@ test("@e2e Verify end to end account fund transfer scenario", async ({
         return {
             originalAccount: acc,
             originalAccountBalance: await convertAccountBalanceToNumber(acc[1]),
+            originalTotalBalance: await accountsOverviewPage.getTotalBalance()
         };
     });
 
@@ -66,7 +69,6 @@ test("@e2e Verify end to end account fund transfer scenario", async ({
         await navigationPanel.clickOpenNewAccount();
         expect(await openNewAccount.isTitleVisible()).toBe(true);
         await openNewAccount.openNewAccount(AccountType.SAVINGS);
-
         return await openNewAccount.getNewAccountNo();
     });
 
@@ -77,8 +79,7 @@ test("@e2e Verify end to end account fund transfer scenario", async ({
         const bal = await convertAccountBalanceToNumber(accountRow[1]);
 
         expect(await accountsOverviewPage.getTotalBalance())
-            .toBe(Number(ACCOUNT_OVERVIEWPAGE.TOTALACCOUNT_BALANCE.replace("$", "").trim()));
-
+            .toBe(originalTotalBalance);
         return bal;
     });
 

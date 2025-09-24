@@ -23,3 +23,5 @@ export const API = {
     CONTENT_TYPE: 'application/json'
 };
 
+export const NA = 'NA';
+

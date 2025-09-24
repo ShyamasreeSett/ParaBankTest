@@ -1,4 +1,5 @@
-import { type Locator, type Page } from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
+import {NA} from "@resources/constants";
 
 export class myBillPayPage {
     readonly page: Page;
@@ -10,13 +11,13 @@ export class myBillPayPage {
     //constructor 
     constructor(page: Page) {
         this.page = page;
-        this.title = page.locator('.title', { hasText: 'Bill Payment Complete' });
+        this.title = page.locator('.title', {hasText: 'Bill Payment Complete'});
         this.successDesc = this.title.locator('xpath=following-sibling::p[1]');
     }
 
-    async isSuccessTitleVisible() {
+    async isSuccessTitleVisible(): Promise<boolean> {
         try {
-            await this.title.waitFor({ state: 'visible' });
+            await this.title.waitFor({state: 'visible'});
             return (await this.title.isVisible());
         } catch (error) {
             console.error('success title is not displayed after billPayment ', error);
@@ -24,13 +25,13 @@ export class myBillPayPage {
         }
     }
 
-    async getSuccessDesc() {
+    async getSuccessDesc(): Promise<string> {
         try {
             console.log(await this.successDesc.allTextContents());
             return (await this.successDesc.textContent());
         } catch (error) {
             console.error('success title is not displayed after billPayment ', error);
-            return 'random';
+            return NA;
         }
     }
 }

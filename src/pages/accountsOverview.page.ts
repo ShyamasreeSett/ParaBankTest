@@ -1,4 +1,5 @@
-import { type Locator, type Page } from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
+import {NA} from "@resources/constants";
 
 export class myAccountsOverviewPage {
     readonly page: Page;
@@ -19,18 +20,19 @@ export class myAccountsOverviewPage {
         this.balanceCells = page.locator('//table[@id="accountTable"]//tr[td/a]/td[2]');
     }
 
-    async getTitle() {
+    async getTitle(): Promise<string> {
         try {
-            await this.title.waitFor({ state: 'visible' });
+            await this.title.waitFor({state: 'visible'});
             return (await this.title.textContent()).trim();
         } catch (error) {
             console.error('Title is not displayed in overview page:', error);
+            return NA;
         }
     }
 
     async getAccountOverview1stAccount(): Promise<string[]> {
         try {
-            await this.total.waitFor({ state: 'visible' });
+            await this.total.waitFor({state: 'visible'});
             return (await this.firstAccount.locator('td').allTextContents());// return all elements in the 1st row as array
         } catch (error) {
             console.error('1st Account row was not available', error);
@@ -39,7 +41,7 @@ export class myAccountsOverviewPage {
 
     async getAccountOverviewRow(account: string): Promise<string[]> {
         try {
-            await this.total.waitFor({ state: 'visible' });
+            await this.total.waitFor({state: 'visible'});
             const rowN = this.page.locator(`//table[@id="accountTable"]//tr[td/a[text()="${account}"]]`);
             const allCells = rowN.locator('td');
             return (await allCells.allTextContents());// return all elements in the row as array
@@ -48,7 +50,7 @@ export class myAccountsOverviewPage {
         }
     }
 
-    async getTotalBalance() {
+    async getTotalBalance(): Promise<number> {
         try {
             const balanceTexts = await this.balanceCells.allTextContents();
 
@@ -57,15 +59,10 @@ export class myAccountsOverviewPage {
             );
 
             // Sum the numbers using lamda function reduce
-            const total = balances.reduce((acc, val) => acc + val, 0);
-            return total;
+            return balances.reduce((acc, val) => acc + val, 0);
         } catch (error) {
             console.error('Account balances were not calculated', error);
+            return 0;
         }
-    }
-
-    // Wait until network is idle (page is stable)
-    async waitUntilStable() {
-        await this.page.waitForLoadState('networkidle'); // waits until no network requests for ~500ms
     }
 }

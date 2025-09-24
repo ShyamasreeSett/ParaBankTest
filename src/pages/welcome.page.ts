@@ -1,4 +1,5 @@
-import { type Locator, type Page } from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
+import {NA} from "@resources/constants";
 
 export class myWelcomePage {
     readonly page: Page;
@@ -12,19 +13,21 @@ export class myWelcomePage {
         this.description = page.locator('.title + p');
     }
 
-    async getWelcomeTitle() {
+    async getWelcomeTitle(): Promise<string> {
         try {
             return await this.title.textContent();
         } catch (error) {
             console.error('Welcome title is not visible/registration was not successful', error);
+            return NA;
         }
     }
 
-    async getWelcomeDesription() {
+    async getWelcomeDescription(): Promise<string> {
         try {
             return await this.description.textContent();
         } catch (error) {
             console.error('Welcome description is not displayed in the welcome page', error);
+            return NA;
         }
     }
 }

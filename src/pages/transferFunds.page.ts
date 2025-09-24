@@ -1,4 +1,5 @@
 import {type Locator, type Page} from '@playwright/test';
+import {NA} from "@resources/constants";
 
 export class myTranferFundsPage {
     readonly page: Page;
@@ -48,7 +49,7 @@ export class myTranferFundsPage {
         }
     }
 
-    async isSuccessTitleVisible() {
+    async isSuccessTitleVisible(): Promise<boolean> {
         try {
             await this.title.waitFor({state: 'visible'});
             return (await this.title.isVisible());
@@ -58,13 +59,13 @@ export class myTranferFundsPage {
         }
     }
 
-    async getSuccessDesc() {
+    async getSuccessDesc(): Promise<string> {
         try {
             console.log(await this.successDesc.allTextContents());
             return (await this.successDesc.textContent());
         } catch (error) {
             console.error('success title is not displayed after transfer ', error);
-            return 'random';
+            return NA;
         }
     }
 
